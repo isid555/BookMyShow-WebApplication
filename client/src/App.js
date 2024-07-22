@@ -11,14 +11,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
 
     return(
-<div className={"App"}>
+<div className="App">
+
+    <h1>Hello</h1>
 
     <BrowserRouter>
         <Routes>
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>} />
+            {/*<Route path="/" element={<Home/>} />*/}
 
         </Routes>
     </BrowserRouter>
