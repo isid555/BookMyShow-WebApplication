@@ -1,41 +1,35 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getAllMovies } from "../calls/movies";
 import { message, Row, Col, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { getAllMovies } from "../calls/movies"; // Assuming this is a function that fetches movies
 
 const Home = () => {
     const [movies, setMovies] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const getData = async () => {
         try {
-
             const response = await getAllMovies();
             if (response.success) {
                 setMovies(response.data);
             } else {
                 message.error(response.message);
             }
-
         } catch (err) {
             message.error(err.message);
-
         }
     };
 
     const handleSearch = (e) => {
         setSearchText(e.target.value);
-        console.log(searchText);
     };
 
     useEffect(() => {
         getData();
-    }, [movies]);
+    }, []);
 
     return (
         <>
@@ -69,12 +63,10 @@ const Home = () => {
                             <Col
                                 className="gutter-row mb-5"
                                 key={movie._id}
-                                span={{
-                                    xs: 24,
-                                    sm: 24,
-                                    md: 12,
-                                    lg: 10,
-                                }}
+                                xs={24}
+                                sm={24}
+                                md={12}
+                                lg={10}
                             >
                                 <div className="text-center">
                                     <img
