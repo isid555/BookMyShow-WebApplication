@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SingleMovie from "./pages/SingleMovie";
+import Admin from "./pages/Admin";
 
 
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Home/>} />
             <Route path="/movie/:id" element={<SingleMovie />} />
+            <Route path={"/admin"} element={<Admin/>}/>
         </Routes>
     </BrowserRouter>
 
