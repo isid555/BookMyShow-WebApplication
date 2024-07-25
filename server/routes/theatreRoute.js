@@ -54,9 +54,9 @@ router.get('/get-all-theatres', async (req, res) => {
 
 
 // Get the theatres of a specific owner
-router.get('/get-all-theatres-by-owner',  async (req, res) => {
+router.post('/get-all-theatres-by-owner',  async (req, res) => {
     try{
-        const allTheatres = await Theatre.find({owner: req.body.owner})
+        const allTheatres = await Theatre.find({_id: req.body.owner}).populate('owner');
         if(allTheatres){
             res.send({
                 success: true,

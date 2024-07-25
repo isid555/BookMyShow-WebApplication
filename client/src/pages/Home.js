@@ -33,6 +33,7 @@ const Home = () => {
 
     return (
         <>
+
             <Row className="justify-content-center w-100">
                 <Col xs={{ span: 24 }} lg={{ span: 12 }}>
                     <Input

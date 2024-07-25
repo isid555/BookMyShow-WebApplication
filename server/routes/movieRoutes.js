@@ -44,6 +44,14 @@ router.get('/get-all-movies' , async(req , res)=>{
 router.get('/movie/:id', async (req, res) => {
     try{
         const movie = await Movie.findById(req.params.id);
+
+        if(!movie){
+          res.status(404).send({
+                success: false,
+                message: "Movie not found!"
+        });
+        }
+
         res.send({
             success: true,
             message: "Movie fetched successfully!",

@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Show = require('../models/showModel');
 
-
 // Add Show
 router.post("/add-show",async (req,res) =>{
 
@@ -28,7 +27,7 @@ router.post("/add-show",async (req,res) =>{
 
 
 //get all shows,in a particular theatre
-router.post('/get-all-shows-by-theatre',  async (req, res) => {
+    router.post('/get-all-shows-by-theatre',  async (req, res) => {
     try{
         const shows = await Show.find({theatre: req.body.theatreId}).populate('movie')
         res.send({
@@ -65,10 +64,12 @@ router.post('/get-show-by-id',  async (req, res) => {
 // Get all theatres by movie which has some shows
 router.post("/get-all-theatres-by-movie", async (req, res) => {
     try{
-        const {movie, date} = req.body;
+        const movie = req.body.movie;
+        const date = req.body.date;
         // First get all the shows of the selected date
-        const shows = await Show.find({movie, date}).populate('theatre');
-
+        console.log('Querying with:', { movie , date: date });
+        const shows = await Show.find({movie:movie,date:date}).populate('theatre');
+        console.log('Found shows:', shows);
         // Filter out the unique theatres now
         let uniqueTheatres = [];
         shows.forEach(show => {
@@ -90,6 +91,7 @@ router.post("/get-all-theatres-by-movie", async (req, res) => {
         })
     }
 });
+
 
 // Update mshow
 router.put("/update-show",  async (req, res) => {
