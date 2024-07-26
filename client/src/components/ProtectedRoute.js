@@ -1,112 +1,119 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, message} from 'antd';
-import TheatreFormModal from '../pages/Partner/TheatreFormModal';
-import DeleteTheatreModal from '../pages/Partner/DeleteTheatreModal';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getAllTheatres } from '../calls/theatres';
-import { useSelector, useDispatch } from 'react-redux';
-import ShowModal from '../pages/Partner/ShowModal';
+import React, { useEffect, useState } from "react";
+import { GetCurrentUser } from "../calls/users";
+import { useNavigate } from "react-router-dom";
+import { message, Layout, Menu } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 
+import { Header } from "antd/es/layout/layout";
+import {
+  HomeOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { setUser } from "../pages/redux/userSlice";
 
-const TheatreList = () => {
-    const { user } = useSelector( (state) => state.user );
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isShowModalOpen, setIsShowModalOpen] = useState(false);
-    const [selectedTheatre, setSelectedTheatre] = useState(null);
-    const [formType, setFormType] = useState("add");
-    const [theatres, setTheatres] = useState(null);
-    const dispatch = useDispatch();
+function ProtectedRoute({ children }) {
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const getData = async () => {
-        try{
+  const navItems = [
+    {
+      label: "Home",
+      icon: <HomeOutlined />,
+    },
 
-            const response = await getAllTheatres({ owner: "6695e6416dec097c3197e05f"});
-            if(response.success){
-                const allTheatres = response.data;
-                // console.log(allTheatres);
-                setTheatres(
-                    allTheatres.map(function(item){
-                        return {...item, key: `theatre${item._id}`}
-                    })
-                );
-            }else{
-                message.error(response.message)
-            }
+    {
+      label: `${user ? user.name : ""}`,
+      icon: <UserOutlined />,
+      children: [
+        {
+          label: (
+            <span
+            onClick={() => {
+              if (user.role === 'admin') {
+                navigate("/admin");
+              } else if (user.role === 'partner') {
+                navigate("/partner");
+              } else {
+                navigate("/profile");
+              }
+            }}
+            >
+              My Profile
+            </span>
+          ),
+          icon: <ProfileOutlined />,
+        },
 
+        {
+          label: (
+            <Link
+              to="/login"
+              onClick={() => {
+                localStorage.removeItem("token");
+              }}
+            >
+              Log Out
+            </Link>
+          ),
+          icon: <LogoutOutlined />,
+        },
+      ],
+    },
+  ];
 
-        }catch(err){
+  const getValidUser = async () => {
+    try {
 
-            message.error(err.message);
-        }
+      const response = await GetCurrentUser();
+      console.log(response)
+      dispatch(setUser(response.data));
+
+      // Hide Loader
+    } catch (error) {
+      dispatch(setUser(null));
+      message.error(error.message);
     }
+  };
 
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name'
-        },
-        {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
-        },
-        {
-            title: 'Phone Number',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email'
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            render: (status, data) => {
-                if(data.isActive){
-                    return `Approved`
-                }else{
-                    return `Pending/ Blocked`
-                }
-            }
-        },
-        {
-            title: 'Action',
-            dataIndex: 'action',
-            render: (text, data) => {
-                return(
-                    <div className='d-flex align-items-center gap-10'>
-                        <Button onClick={() => { setIsModalOpen(true); setFormType("edit"); setSelectedTheatre(data) }}><EditOutlined/></Button>
-                        <Button onClick={ () => { setIsDeleteModalOpen(true); setSelectedTheatre(data); }}><DeleteOutlined/></Button>
-                        { data.isActive && <Button onClick={ () => { setIsShowModalOpen(true); setSelectedTheatre(data); }}>+ Shows</Button> }
-                    </div>
-                )
-            }
-        },
-    ];
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      getValidUser();
+    } else {
+      navigate("/login");
+    }
+  }, []);
 
-    useEffect(() => {
-        getData();
-    }, [])
-
-    return(
-        <>
-            <div className='d-flex justify-content-end'>
-                <Button type="primary" onClick={() => { setIsModalOpen(true); setFormType("add") }}>Add Theatre</Button>
-            </div>
-            <Table dataSource={theatres} columns={columns} />
-            { isModalOpen && <TheatreFormModal isModalOpen={isModalOpen} selectedTheatre={selectedTheatre} setSelectedTheatre={setSelectedTheatre} setIsModalOpen={setIsModalOpen} formType={formType} getData={getData} /> }
-            {
-                isDeleteModalOpen && <DeleteTheatreModal isDeleteModalOpen={isDeleteModalOpen} selectedTheatre={selectedTheatre} setIsDeleteModalOpen={setIsDeleteModalOpen} setSelectedTheatre={setSelectedTheatre} getData={getData} />
-            }
-            {
-                isShowModalOpen && <ShowModal isShowModalOpen={isShowModalOpen} setIsShowModalOpen={setIsShowModalOpen} selectedTheatre={selectedTheatre}/>
-            }
-        </>
-    );
+  return (
+    user && (
+      <>
+        <Layout>
+          <Header
+            className="d-flex justify-content-between"
+            style={{
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <h3 className="demo-logo text-white m-0" style={{ color: "white" }}>
+              Book My Show
+            </h3>
+            <Menu theme="dark" mode="horizontal" items={navItems} />
+          </Header>
+          <div style={{ padding: 24, minHeight: 380, background: "#fff" }}>
+            {children}
+          </div>
+        </Layout>
+      </>
+    )
+  );
 }
 
-export default TheatreList;
+export default ProtectedRoute;

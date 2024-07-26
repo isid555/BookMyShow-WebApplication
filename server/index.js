@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes')
 const theatreRoutes = require('./routes/theatreRoute')
 const showRoutes = require('./routes/showRoutes')
 const movieRoutes = require('./routes/movieRoutes')
+const bookingRoute = require('./routes/bookingRoute')
 require('dotenv').config()
 const app = express()
 app.use(express.json())
@@ -17,6 +18,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/theatres',theatreRoutes)
 app.use('/api/shows',showRoutes)
 app.use('/api/movies',movieRoutes)
+app.use('/api/bookings' , bookingRoute )
 
 const PORT = 8080
 app.listen(PORT,()=>{

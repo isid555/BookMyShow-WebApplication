@@ -8,6 +8,7 @@ import SingleMovie from "./pages/SingleMovie";
 import Admin from "./pages/Admin";
 import Partner from "./pages/Partner";
 import ProtectedRoute from "./components/ProtectedRoute";
+import BookShow from "./pages/BookShow";
 
 
 
@@ -16,7 +17,7 @@ function App() {
     return(
 <div className="App">
 
-    <h1>I'm from App.js</h1>
+    <h1>Book My Show</h1>
 
     <BrowserRouter>
         <Routes>
@@ -26,7 +27,8 @@ function App() {
             <Route path="/" element={<Home/>} />
             <Route path="/movie/:id" element={<SingleMovie />} />
             <Route path={"/admin"} element={<Admin/>}/>
-            <Route path={"/partner"} element={<ProtectedRoute><Partner/></ProtectedRoute>   }/>
+            <Route path={"/partner"} element={<Partner/>   }/>
+            <Route path="/book-show/:id" element={<BookShow/>} />
         </Routes>
     </BrowserRouter>
 
