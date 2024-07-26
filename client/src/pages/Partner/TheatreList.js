@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, message} from 'antd';
-import TheatreFormModal from '../pages/Partner/TheatreFormModal';
-import DeleteTheatreModal from '../pages/Partner/DeleteTheatreModal';
+import TheatreFormModal from './TheatreFormModal';
+import DeleteTheatreModal from './DeleteTheatreModal';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getAllTheatres } from '../calls/theatres';
-import { useSelector, useDispatch } from 'react-redux';
-import ShowModal from '../pages/Partner/ShowModal';
+import { getAllTheatres } from '../../calls/theatres';
+import { useSelector} from 'react-redux';
+import ShowModal from './ShowModal';
 
 
 const TheatreList = () => {
@@ -16,12 +16,12 @@ const TheatreList = () => {
     const [selectedTheatre, setSelectedTheatre] = useState(null);
     const [formType, setFormType] = useState("add");
     const [theatres, setTheatres] = useState(null);
-    const dispatch = useDispatch();
+
 
     const getData = async () => {
         try{
-
-            const response = await getAllTheatres({ owner: "6695e6416dec097c3197e05f"});
+            let userid = user.email;
+            const response = await getAllTheatres({ owner: userid});
             if(response.success){
                 const allTheatres = response.data;
                 // console.log(allTheatres);
@@ -90,7 +90,7 @@ const TheatreList = () => {
 
     useEffect(() => {
         getData();
-    }, [])
+    }, );
 
     return(
         <>
